@@ -3,275 +3,473 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rallumer les Étoiles</title>
+    <title>Éclipse Artificielle</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     <style>
-        .welcome-wrapper {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 1;
+        /* ===== VARIABLES ===== */
+        :root {
+            --bg-dark: #020408;
+            --accent: #f1c40f;
+            --text-light: #e0e6ed;
+            --glass: rgba(255,255,255,0.05);
+            --border: rgba(255,255,255,0.1);
         }
 
-        .welcome-eyebrow {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.65rem;
-            letter-spacing: 6px;
-            color: var(--accent);
-            opacity: 0.6;
-            text-transform: uppercase;
-            margin-bottom: 30px;
-            animation: wFadeIn 1.4s ease-out 0.3s both;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; }
 
-        .welcome-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2.8rem, 9vw, 6.5rem);
-            font-weight: 700;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            line-height: 1.1;
-            margin-bottom: 8px;
-            animation: wFadeIn 1.4s ease-out 0.5s both;
-        }
-
-        .welcome-title .accent-word {
-            color: var(--accent);
-            text-shadow: 0 0 40px rgba(241, 196, 15, 0.45);
-        }
-
-        .welcome-tagline {
+        body {
             font-family: 'Rajdhani', sans-serif;
-            font-size: clamp(0.9rem, 2vw, 1.2rem);
-            color: rgba(224, 230, 237, 0.45);
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 80px;
-            animation: wFadeIn 1.4s ease-out 0.8s both;
-        }
-
-        .enter-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 14px;
-            padding: 18px 56px;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            text-decoration: none;
-            background: transparent;
-            cursor: pointer;
-            position: relative;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
             overflow: hidden;
-            transition: color 0.4s, box-shadow 0.4s;
-            animation: wFadeIn 1.4s ease-out 1.2s both;
         }
 
-        .enter-btn::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: var(--accent);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
-            z-index: 0;
-        }
-
-        .enter-btn span { position: relative; z-index: 1; }
-
-        .enter-btn:hover { color: #000; box-shadow: 0 0 50px rgba(241,196,15,0.35); }
-        .enter-btn:hover::before { transform: scaleX(1); }
-
-        .ring {
+        /* ===== FOND ÉTOILÉ ===== */
+        #star-canvas {
             position: fixed;
-            border-radius: 50%;
-            border: 1px solid rgba(241, 196, 15, 0.04);
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(circle at center, #11141d 0%, #020408 100%);
+        }
+
+        /* ===== SECTIONS (SINGLE PAGE APP) ===== */
+        .section {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            opacity: 0;
             pointer-events: none;
-            animation: ringPulse 7s ease-in-out infinite;
+            transition: opacity 0.6s ease;
+            overflow-y: auto;
         }
-        .ring:nth-child(1) { width: 380px; height: 380px; }
-        .ring:nth-child(2) { width: 620px; height: 620px; animation-delay: 1.2s; border-color: rgba(241,196,15,0.025); }
-        .ring:nth-child(3) { width: 880px; height: 880px; animation-delay: 2.4s; border-color: rgba(241,196,15,0.015); }
-
-        @keyframes ringPulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
+        .section.active {
+            opacity: 1;
+            pointer-events: all;
         }
 
-        @keyframes wFadeIn {
-            from { opacity: 0; transform: translateY(18px); }
-            to   { opacity: 1; transform: translateY(0); }
+        /* ===== NAVIGATION ===== */
+        nav {
+            display: flex; justify-content: center; align-items: center; padding: 18px 20px;
+            background: rgba(2,4,8,0.92); backdrop-filter: blur(15px); position: sticky;
+            top: 0; z-index: 100; border-bottom: 1px solid var(--border);
         }
-    
-        body { overflow: hidden; }
-        .welcome-wrapper { justify-content: flex-end; padding-bottom: 140px; min-height: 100vh; }
-        .crawl-container {
-            position: absolute; inset: 0; display:flex; justify-content:center; align-items:flex-end;
-            perspective: 500px; overflow:hidden; z-index:2; pointer-events:none;
+        nav a {
+            color: var(--text-light); text-decoration: none; margin: 0 14px;
+            font-size: 0.75rem; font-family: 'Orbitron', sans-serif; letter-spacing: 1.5px;
+            text-transform: uppercase; opacity: 0.6; cursor: pointer; transition: 0.3s;
         }
-        .crawl-perspective {
-            width: 80%; max-width: 900px; height:100%; transform: rotateX(25deg); transform-origin: center bottom;
-        }
-        .crawl-text {
-            position:absolute; width:100%; bottom:-120%; font-family:'Orbitron',sans-serif; color:var(--accent);
-            text-align: justify; font-size: clamp(1.2rem, 2vw, 2rem); line-height:1.8; letter-spacing:2px;
-            text-shadow: 0 0 12px rgba(241,196,15,0.25);
-        }
-        .crawl-text h1 { text-align:center; font-size: clamp(2rem, 4vw, 4rem); margin-bottom:60px; }
-        .crawl-intro { text-align:center; font-size:1rem; opacity:0.8; margin-bottom:40px; }
-        .crawl-text p { margin-bottom: 2.5rem; }
+        nav a:hover, nav a.active { color: var(--accent); opacity: 1; text-shadow: 0 0 10px var(--accent); }
 
+        /* ===== CONTENU PAGES ===== */
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; animation: fadeIn 0.8s ease-out; }
+        .card { background: var(--glass); border: 1px solid var(--border); padding: 50px; border-radius: 25px; backdrop-filter: blur(10px); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; color: var(--accent); text-shadow: 0 0 20px rgba(241,196,15,0.4); margin-bottom: 20px; text-align: center; text-transform: uppercase; letter-spacing: 2px; }
+        p { margin-bottom: 16px; line-height: 1.7; font-size: 1.05rem; }
+        .media-placeholder { width: 100%; height: 300px; background: rgba(0,0,0,0.4); border: 1px dashed var(--border); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 25px 0; color: #4a4d52; font-style: italic; text-transform: uppercase; font-size: 0.85rem; }
+        .next-footer { display: flex; justify-content: flex-end; margin-top: 40px; border-top: 1px solid var(--border); padding-top: 30px; }
+        .next-btn { padding: 12px 30px; background: transparent; color: var(--accent); border: 1px solid var(--accent); font-family: 'Orbitron', sans-serif; font-size: 0.78rem; letter-spacing: 2px; cursor: pointer; transition: 0.4s; text-transform: uppercase; }
+        .next-btn:hover { background: var(--accent); color: #000; }
+
+        /* ===== INDEX — INTRO ===== */
+        #section-index { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 140px; overflow: hidden; }
+        .ring { position: fixed; border-radius: 50%; border: 1px solid rgba(241,196,15,0.04); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; animation: ringPulse 7s ease-in-out infinite; }
+        .ring:nth-child(1) { width:380px; height:380px; } .ring:nth-child(2) { width:620px; height:620px; animation-delay:1.2s; } .ring:nth-child(3) { width:880px; height:880px; animation-delay:2.4s; }
+        @keyframes ringPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+        .crawl-container { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-end; perspective: 500px; overflow: hidden; z-index: 2; pointer-events: none; }
+        .crawl-perspective { width: 80%; max-width: 900px; height: 100%; transform: rotateX(25deg); transform-origin: center bottom; }
+        .crawl-text { position: absolute; width: 100%; bottom: -120%; font-family: 'Orbitron', sans-serif; color: var(--accent); text-align: justify; font-size: clamp(1.1rem, 2vw, 1.8rem); line-height: 1.8; letter-spacing: 2px; text-shadow: 0 0 12px rgba(241,196,15,0.25); }
+        .crawl-text h2 { text-align:center; font-size:clamp(1.8rem,4vw,3.5rem); margin-bottom:60px; }
+        .welcome-eyebrow { font-family: 'Orbitron', sans-serif; font-size: 0.65rem; letter-spacing: 6px; color: var(--accent); opacity: 0.6; text-transform: uppercase; margin-bottom: 30px; animation: wFadeIn 1.4s ease-out 0.3s both; z-index: 3; }
+        .enter-btn { display: inline-flex; align-items: center; gap: 14px; padding: 18px 56px; border: 1px solid var(--accent); color: var(--accent); font-family: 'Orbitron', sans-serif; font-size: 0.8rem; letter-spacing: 5px; text-transform: uppercase; background: transparent; cursor: pointer; position: relative; overflow: hidden; transition: 0.4s; z-index: 3; }
+        .enter-btn::before { content:''; position:absolute; inset:0; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.45s cubic-bezier(0.19,1,0.22,1); z-index:0; }
+        .enter-btn span { position:relative; z-index:1; } .enter-btn:hover { color:#000; box-shadow:0 0 50px rgba(241,196,15,0.35); } .enter-btn:hover::before { transform:scaleX(1); }
+        @keyframes wFadeIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+
+        /* ===== CONSTELLATION HUB ===== */
+        #section-hub { display: flex; flex-direction: column; }
+        .hub-wrapper { display: flex; flex-direction: column; height: 100vh; padding: 20px; }
+        .hub-header { text-align: center; margin-top: 20px; }
+        .hub-header h1 { font-size: clamp(1.5rem, 4vw, 2.8rem); }
+        .subtitle { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; color: rgba(224,230,237,0.55); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 4px; }
+        
+        .constellation-nav { flex-grow: 1; position: relative; width: 100%; min-height: 50vh; max-width: 1100px; margin: 0 auto; }
+        
+        /* NODES (Les ronds cliquables) */
+        .node { position: absolute; z-index: 10; transform: translate(-50%,-50%); cursor: pointer; transition: transform 0.3s ease; }
+        .node:hover { transform: translate(-50%,-50%) scale(1.15); }
+        .node:hover .node-content { border-color: var(--accent); box-shadow: 0 0 30px rgba(241,196,15,0.5); }
+        .node-content { width: 110px; height: 110px; background: rgba(40,42,58,0.55); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(8px); box-shadow: 0 0 25px rgba(0,0,0,0.7); transition: all 0.3s ease; }
+        .node span { font-family: 'Orbitron', sans-serif; font-size: 0.7rem; font-weight: 700; color: rgba(241,196,15,0.55); text-align: center; letter-spacing: 1.5px; padding: 8px; text-shadow: 1px 1px 4px rgba(0,0,0,0.8); }
+        .node:hover span { color: var(--accent); }
+
+        .n1{top:25%;left:40%} .n2{top:35%;left:65%} .n3{top:55%;left:75%}
+        .n4{top:75%;left:55%} .n5{top:70%;left:30%} .n6{top:45%;left:20%}
+        
+        .hub-footer { text-align: center; padding: 10px; z-index: 5;}
+        
+        /* Bouton "Commencer" */
+        .start-zone { position: fixed; bottom: 40px; right: 50px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 100; animation: fadeIn 1s ease-out 0.4s both; }
+        .start-hint { font-family: 'Rajdhani', sans-serif; font-size: 0.68rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(224,230,237,0.3); }
+        .start-btn { display: inline-flex; align-items: center; gap: 14px; padding: 16px 52px; border: 1px solid var(--accent); color: var(--accent); font-family: 'Orbitron', sans-serif; font-size: 0.78rem; letter-spacing: 5px; text-transform: uppercase; background: transparent; cursor: pointer; position: relative; overflow: hidden; transition: 0.4s; }
+        .start-btn::before { content:''; position:absolute; inset:0; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.45s cubic-bezier(0.19,1,0.22,1); z-index:0; }
+        .start-btn span,.start-btn .arrow { position:relative; z-index:1; }
+        .start-btn:hover { color:#000; box-shadow:0 0 45px rgba(241,196,15,0.4); } .start-btn:hover::before { transform:scaleX(1); } .start-btn:hover .arrow { transform:translateX(5px); }
+
+        /* ===== LECTEUR AUDIO ===== */
+        #audio-player { position: fixed; bottom: 20px; left: 20px; z-index: 9000; display: flex; align-items: center; gap: 10px; background: rgba(2,4,8,0.85); border: 1px solid rgba(241,196,15,0.25); border-radius: 40px; padding: 8px 16px; backdrop-filter: blur(12px); transition: 0.3s; }
+        #audio-player:hover { border-color: rgba(241,196,15,0.6); }
+        #play-btn { width: 32px; height: 32px; border: 1px solid var(--accent); border-radius: 50%; background: transparent; color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        #play-btn:hover { background: var(--accent); color: #000; }
+        .player-info { display: flex; flex-direction: column; gap: 2px; }
+        .player-title { font-family: 'Orbitron', sans-serif; font-size: 0.58rem; letter-spacing: 2px; color: var(--accent); opacity: 0.8; text-transform: uppercase; }
+        .player-bars { display: flex; gap: 2px; align-items: flex-end; height: 12px; }
+        .bar { width: 3px; background: var(--accent); border-radius: 1px; opacity: 0.6; animation: barBounce 0.8s ease-in-out infinite alternate; }
+        .bar:nth-child(1){height:4px;animation-delay:0s} .bar:nth-child(2){height:8px;animation-delay:0.1s} .bar:nth-child(3){height:12px;animation-delay:0.2s} .bar:nth-child(4){height:6px;animation-delay:0.15s} .bar:nth-child(5){height:10px;animation-delay:0.05s}
+        .player-bars.paused .bar { animation-play-state: paused; }
+        #volume-slider { -webkit-appearance: none; width: 60px; height: 3px; background: rgba(241,196,15,0.3); border-radius: 2px; outline: none; cursor: pointer; }
+        #volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+
+        /* ===== WARP OVERLAY ===== */
+        #warp-overlay { position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: 0; }
+        #warp-overlay.active { pointer-events: all; }
+        #warp-canvas { position: absolute; inset: 0; width: 100%; height: 100%; background: #000; }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
     </style>
 </head>
 <body>
-    <canvas id="star-canvas"></canvas>
 
-    <div class="ring"></div>
-    <div class="ring"></div>
-    <div class="ring"></div>
+<canvas id="star-canvas"></canvas>
 
+<audio id="bg-audio" loop>
+    <source src="Orbiting_the_Unseen_Shore.mp3" type="audio/mpeg">
+</audio>
+
+<div id="audio-player">
+    <button id="play-btn" title="Play/Pause">▶</button>
+    <div class="player-info">
+        <div class="player-title">Orbiting the Unseen Shore</div>
+        <div class="player-bars paused" id="player-bars">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+    </div>
+    <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.4">
+</div>
+
+<div id="warp-overlay"><canvas id="warp-canvas"></canvas></div>
+
+<div class="section active" id="section-index">
+    <div class="ring"></div><div class="ring"></div><div class="ring"></div>
     <div class="crawl-container" id="crawl-container">
         <div class="crawl-perspective">
             <div class="crawl-text" id="crawl-text">
                 <p class="crawl-intro">WEBDOCUMENTAIRE</p>
-                <h1>QUAND LA VILLE ÉTEINT LES ÉTOILES</h1>
-                <p>
-                    Sous l’éclat permanent de nos néons et de nos lampadaires, la nuit s'efface. 
-					Ce qui n'était au départ qu'un signe de progrès est devenu une pollution invisible, 
-					perturbant nos cycles biologiques, menaçant la biodiversité et nous coupant de notre lien millénaire avec le cosmos.
-
-                </p>
-                <p>
-                    Ce webdocumentaire vous invite à éteindre les projecteurs pour redécouvrir l'importance du noir complet. 
-					À travers des données interactives et des paysages nocturnes préservés, explorez les enjeux d'un combat crucial :
-					celui de la sobriété lumineuse. 
-
-                </p>
+                <h2>QUAND LA VILLE ÉTEINT LES ÉTOILES</h2>
+                <p>Sous l'éclat permanent de nos néons et de nos lampadaires, la nuit s'efface. Ce qui n'était au départ qu'un signe de progrès est devenu une pollution invisible, perturbant nos cycles biologiques, menaçant la biodiversité et nous coupant de notre lien millénaire avec le cosmos.</p>
+                <p>Ce webdocumentaire vous invite à éteindre les projecteurs pour redécouvrir l'importance du noir complet. À travers des données interactives et des paysages nocturnes préservés, explorez les enjeux d'un combat crucial : celui de la sobriété lumineuse.</p>
             </div>
         </div>
     </div>
+    <p class="welcome-eyebrow">Webdocumentaire · BUT Informatique Toulouse</p>
+    <button class="enter-btn" id="enter-btn"><span>▶&nbsp;&nbsp;Explorer</span></button>
+</div>
 
-    <div class="welcome-wrapper">
-        <p class="welcome-eyebrow">Webdocumentaire · BUT Informatique Toulouse</p>
-        <a href="constelation.html" class="enter-btn" id="enter-btn">
-            <span>▶&nbsp;&nbsp;Explorer</span>
-        </a>
+<div class="section" id="section-hub">
+    <div class="hub-wrapper">
+        <header class="hub-header">
+            <h1>ÉCLIPSE ARTIFICIELLE</h1>
+            <p class="subtitle">Quand la ville éteint les étoiles</p>
+            <p style="font-family:'Rajdhani';font-size:0.8rem;letter-spacing:2px;opacity:0.45;text-transform:uppercase;margin-top:4px;">Explorez le webdocumentaire</p>
+        </header>
+
+        <main class="constellation-nav" id="hub-container">
+            <svg class="constellation-lines" id="constellation-svg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></svg>
+            
+            <div class="node n1" data-target="science"><div class="node-content"><span>Science</span></div></div>
+            <div class="node n2" data-target="data"><div class="node-content"><span>Data</span></div></div>
+            <div class="node n3" data-target="biodiv"><div class="node-content"><span>Vivant</span></div></div>
+            <div class="node n4" data-target="sentinelles"><div class="node-content"><span>Militants</span></div></div>
+            <div class="node n5" data-target="solutions"><div class="node-content"><span>Futur</span></div></div>
+            <div class="node n6" data-target="index"><div class="node-content"><span>Bilan</span></div></div>
+        </main>
+
+        <footer class="hub-footer">
+            <p style="font-size:0.68rem;letter-spacing:2px;color:rgba(224,230,237,0.2);">Projet R2.13 — BUT Informatique Toulouse</p>
+        </footer>
     </div>
 
+    <div class="start-zone" id="hub-start-zone">
+        <span class="start-hint">Début du parcours</span>
+        <button class="start-btn" data-target="science"><span>Commencer</span><span class="arrow">→</span></button>
+    </div>
+</div>
 
-    <script>
-    (function(){
-        const crawl = document.getElementById('crawl-text');
-        let position = -120;
-        let speed = 0.095;
-        let manualBoost = 0;
-        function animate(){
-            position += speed + manualBoost;
-            manualBoost *= 0.9;
-            crawl.style.bottom = position + '%';
-            if(position < 260){ requestAnimationFrame(animate); }
-        }
-        window.addEventListener('wheel', (e) => {
-            manualBoost += (-e.deltaY * 0.0008);
-        }, { passive:true });
-        animate();
-    })();
-    </script>
+<div class="section" id="section-science">
+    <nav>
+        <a data-target="hub">HUB</a>
+        <a data-target="science" class="active">Expertise</a>
+        <a data-target="data">Data</a>
+        <a data-target="biodiv">Vivant</a>
+        <a data-target="sentinelles">Sentinelles</a>
+        <a data-target="solutions">Solutions</a>
+    </nav>
+    <div class="container">
+        <div class="card">
+            <h1>L'Œil de l'Expert</h1>
+            <p>Pour un astronome, la lumière artificielle est un "bruit" qui sature les capteurs. À Toulouse, le ciel est 20 fois plus brillant qu'il ne devrait l'être naturellement.</p>
+            <div class="media-placeholder">[ INTERVIEW / SLIDER ]</div>
+            <div class="next-footer"><button class="next-btn" data-target="data">Voir les chiffres →</button></div>
+        </div>
+    </div>
+</div>
 
-    <script src="stars.js"></script>
-    <script>
-    (function () {
-        const overlay = document.createElement('div');
-        overlay.id = 'warp-overlay';
-        overlay.innerHTML = '<canvas id="warp-canvas"></canvas>';
-        document.body.appendChild(overlay);
+<div class="section" id="section-data">
+    <nav>
+        <a data-target="hub">HUB</a>
+        <a data-target="science">Expertise</a>
+        <a data-target="data" class="active">Data</a>
+        <a data-target="biodiv">Vivant</a>
+        <a data-target="sentinelles">Sentinelles</a>
+        <a data-target="solutions">Solutions</a>
+    </nav>
+    <div class="container">
+        <div class="card">
+            <h1>La Terre Vue d'en Haut</h1>
+            <p>L'échelle de Bortle mesure la noirceur du ciel de 1 (ciel pur) à 9 (centre-ville).</p>
+            <div class="media-placeholder">[ CARTE INTERACTIVE ]</div>
+            <div class="next-footer"><button class="next-btn" data-target="biodiv">Impact sur le vivant →</button></div>
+        </div>
+    </div>
+</div>
 
-        const s = document.createElement('style');
-        s.textContent = `
-            #warp-overlay { position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:0; }
-            #warp-overlay.active { pointer-events:all; }
-            #warp-canvas { position:absolute;inset:0;width:100%;height:100%;background:#000; }
-        `;
-        document.head.appendChild(s);
+<div class="section" id="section-biodiv">
+    <nav>
+        <a data-target="hub">HUB</a>
+        <a data-target="science">Expertise</a>
+        <a data-target="data">Data</a>
+        <a data-target="biodiv" class="active">Vivant</a>
+        <a data-target="sentinelles">Sentinelles</a>
+        <a data-target="solutions">Solutions</a>
+    </nav>
+    <div class="container">
+        <div class="card">
+            <h1>Le Sommeil du Vivant</h1>
+            <p>La pollution lumineuse est le deuxième facteur d'extinction des insectes.</p>
+            <div class="media-placeholder">[ VIVANT ]</div>
+            <div class="next-footer"><button class="next-btn" data-target="sentinelles">Les Sentinelles →</button></div>
+        </div>
+    </div>
+</div>
 
-        const wc = document.getElementById('warp-canvas');
-        const wx = wc.getContext('2d');
-        const DURATION = 1600;
-        const pts = [];
+<div class="section" id="section-sentinelles">
+    <nav>
+        <a data-target="hub">HUB</a>
+        <a data-target="science">Expertise</a>
+        <a data-target="data">Data</a>
+        <a data-target="biodiv">Vivant</a>
+        <a data-target="sentinelles" class="active">Sentinelles</a>
+        <a data-target="solutions">Solutions</a>
+    </nav>
+    <div class="container">
+        <div class="card">
+            <h1>Les Sentinelles</h1>
+            <p>Des citoyens et astronomes se battent pour labelliser des "Villes et Villages Étoilés".</p>
+            <div class="media-placeholder">[ REPORTAGE ]</div>
+            <div class="next-footer"><button class="next-btn" data-target="solutions">Les Solutions →</button></div>
+        </div>
+    </div>
+</div>
 
-        function resize() { wc.width = window.innerWidth; wc.height = window.innerHeight; }
+<div class="section" id="section-solutions">
+    <nav>
+        <a data-target="hub">HUB</a>
+        <a data-target="science">Expertise</a>
+        <a data-target="data">Data</a>
+        <a data-target="biodiv">Vivant</a>
+        <a data-target="sentinelles">Sentinelles</a>
+        <a data-target="solutions" class="active">Solutions</a>
+    </nav>
+    <div class="container">
+        <div class="card">
+            <h1>Rallumer les étoiles</h1>
+            <p>Rallumer les étoiles est possible. Voici les technologies qui changent la donne :</p>
+            <div class="media-placeholder">[ SCHÉMA ]</div>
+            <div class="next-footer"><button class="next-btn" data-target="hub">Retour au Hub →</button></div>
+        </div>
+    </div>
+</div>
 
-        function initPts() {
-            pts.length = 0;
-            const cx = wc.width/2, cy = wc.height/2;
-            for (let i = 0; i < 300; i++) {
-                const a = Math.random()*Math.PI*2;
-                const d = Math.random()*Math.hypot(cx,cy)*0.6+20;
-                pts.push({ x: cx+Math.cos(a)*d, y: cy+Math.sin(a)*d,
-                    speed: Math.random()*3+1.5, len: Math.random()*2+1,
-                    br: Math.random()*0.5+0.5 });
-            }
-        }
 
-        function ease(t) { return t*t*t; }
+<script>
+// ===== ÉTOILES =====
+(function(){
+    const canvas = document.getElementById('star-canvas');
+    const ctx = canvas.getContext('2d');
+    const stars = [];
+    function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+    function Star(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.size=Math.random()*1.5; this.opacity=Math.random(); }
+    Star.prototype.draw=function(){ ctx.fillStyle=`rgba(255,255,255,${this.opacity})`; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); };
+    Star.prototype.update=function(){ this.opacity+=(Math.random()-0.5)*0.05; if(this.opacity<0.1)this.opacity=0.1; if(this.opacity>1)this.opacity=1; };
+    resize(); for(let i=0;i<200;i++) stars.push(new Star());
+    function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); stars.forEach(s=>{s.draw();s.update();}); requestAnimationFrame(animate); }
+    animate(); window.addEventListener('resize',resize);
+})();
 
-        function draw(p) {
-            const W=wc.width, H=wc.height, cx=W/2, cy=H/2;
-            wx.fillStyle = `rgba(0,0,0,${p<0.6?0.25+p*0.2:0.05})`;
-            wx.fillRect(0,0,W,H);
-            const sm = p<0.6 ? ease(p/0.6)*15 : 15+ease((p-0.6)/0.4)*60;
-            const tm = p<0.6 ? 1+ease(p/0.6)*8 : 9+ease((p-0.6)/0.4)*40;
-            pts.forEach(pt => {
-                const dx=pt.x-cx, dy=pt.y-cy, dist=Math.sqrt(dx*dx+dy*dy);
-                const nx=dx/dist, ny=dy/dist;
-                pt.x+=nx*pt.speed*sm; pt.y+=ny*pt.speed*sm;
-                if(pt.x<0||pt.x>W||pt.y<0||pt.y>H){
-                    const a=Math.random()*Math.PI*2, r=Math.random()*30+5;
-                    pt.x=cx+Math.cos(a)*r; pt.y=cy+Math.sin(a)*r; pt.speed=Math.random()*3+1.5;
-                }
-                const tl=pt.len*tm, tx=pt.x-nx*tl, ty=pt.y-ny*tl;
-                const g=wx.createLinearGradient(tx,ty,pt.x,pt.y);
-                g.addColorStop(0,'rgba(0,0,0,0)');
-                g.addColorStop(1,`rgba(255,255,255,${pt.br})`);
-                wx.beginPath(); wx.moveTo(tx,ty); wx.lineTo(pt.x,pt.y);
-                wx.strokeStyle=g; wx.lineWidth=1.5; wx.stroke();
-            });
-            if(p>0.75){ wx.fillStyle=`rgba(255,255,255,${ease((p-0.75)/0.25)*0.9})`; wx.fillRect(0,0,W,H); }
-        }
+// =================================================================
+// ===== VOTRE SCRIPT EXACT POUR LES LIGNES DE LA CONSTELLATION ====
+// =================================================================
+function drawConstellation() {
+    const svg = document.getElementById('constellation-svg');
+    if (!svg) return;
+    
+    svg.innerHTML = '';
 
-        function startWarp(href) {
-            resize(); initPts();
-            overlay.style.opacity='1'; overlay.classList.add('active');
-            let t0=null;
-            function tick(ts){
-                if(!t0) t0=ts;
-                const p=Math.min((ts-t0)/DURATION,1);
-                draw(p);
-                p<1 ? requestAnimationFrame(tick) : (window.location.href=href);
-            }
-            requestAnimationFrame(tick);
-        }
+    const nodes = document.querySelectorAll('#section-hub .node');
+    if (nodes.length < 2) return;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('enter-btn').addEventListener('click', function(e){
-                e.preventDefault(); startWarp(this.getAttribute('href'));
-            });
+    // Attendre que la section soit bien affichée pour calculer les coordonnées
+    const svgRect = svg.getBoundingClientRect();
+    if (svgRect.width === 0) {
+        setTimeout(drawConstellation, 50); // relance si largeur = 0
+        return;
+    }
+
+    const connections = generateRandomConnections(nodes.length);
+    const nodePoints = [];
+    
+    nodes.forEach(node => {
+        const rect = node.getBoundingClientRect();
+        nodePoints.push({
+            x: rect.left + rect.width / 2 - svgRect.left,
+            y: rect.top + rect.height / 2 - svgRect.top
         });
-        window.addEventListener('resize', resize);
-    })();
-    </script>
+    });
+
+    const svgNS = "http://www.w3.org/2000/svg";
+    connections.forEach(pair => {
+        const start = nodePoints[pair[0]];
+        const end = nodePoints[pair[1]];
+
+        const line = document.createElementNS(svgNS, "line");
+        line.setAttribute("x1", start.x);
+        line.setAttribute("y1", start.y);
+        line.setAttribute("x2", end.x);
+        line.setAttribute("y2", end.y);
+        
+        // CSS injecté directement sur les traits pour s'assurer qu'ils soient visibles !
+        line.style.stroke = "rgba(255, 255, 255, 0.4)";
+        line.style.strokeWidth = "2";
+        line.style.filter = "drop-shadow(0 0 5px rgba(255,255,255,0.8))";
+        
+        svg.appendChild(line);
+    });
+}
+
+function generateRandomConnections(numNodes) {
+    const pairs = [];
+    const existingConnections = new Set();
+    const availableNodes = Array.from({length: numNodes}, (_, i) => i);
+    shuffleArray(availableNodes); 
+    for (let i = 0; i < availableNodes.length - 1; i++) {
+        addConnection(availableNodes[i], availableNodes[i+1], pairs, existingConnections);
+    }
+    for (let i = 0; i < 3; i++) {
+        const n1 = Math.floor(Math.random() * numNodes);
+        let n2 = Math.floor(Math.random() * numNodes);
+        while (n1 === n2) {
+            n2 = Math.floor(Math.random() * numNodes);
+        }
+        addConnection(n1, n2, pairs, existingConnections);
+    }
+    return pairs;
+}
+
+function addConnection(id1, id2, pairsArr, setObj) {
+    const key = [id1, id2].sort().join('-'); 
+    if (!setObj.has(key)) {
+        setObj.add(key);
+        pairsArr.push([id1, id2]);
+    }
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+window.addEventListener('resize', drawConstellation);
+
+// ===== LECTEUR AUDIO =====
+(function(){
+    const audio=document.getElementById('bg-audio');
+    const btn=document.getElementById('play-btn');
+    const bars=document.getElementById('player-bars');
+    const vol=document.getElementById('volume-slider');
+    audio.volume=0.4; let playing=false;
+    function updateUI(){ btn.textContent=playing?'⏸':'▶'; bars.classList.toggle('paused',!playing); }
+    btn.addEventListener('click',()=>{ if(playing){audio.pause();playing=false;} else{audio.play().catch(()=>{});playing=true;} updateUI(); });
+    vol.addEventListener('input',()=>{ audio.volume=parseFloat(vol.value); });
+    document.addEventListener('click',function autoplay(){
+        if(!playing){audio.play().then(()=>{playing=true;updateUI();}).catch(()=>{});}
+        document.removeEventListener('click',autoplay);
+    },{once:true});
+    updateUI();
+})();
+
+// ===== ANIMATION WARP =====
+const WarpEngine=(function(){
+    const overlay=document.getElementById('warp-overlay'); const wc=document.getElementById('warp-canvas'); const wx=wc.getContext('2d');
+    const pts=[]; const DURATION=1200;
+    function resize(){wc.width=window.innerWidth;wc.height=window.innerHeight;}
+    function init(){ pts.length=0; const cx=wc.width/2,cy=wc.height/2; for(let i=0;i<300;i++){ const a=Math.random()*Math.PI*2,d=Math.random()*Math.hypot(cx,cy)*0.6+20; pts.push({x:cx+Math.cos(a)*d,y:cy+Math.sin(a)*d,speed:Math.random()*3+1.5,len:Math.random()*2+1,br:Math.random()*0.5+0.5}); } }
+    function ease(t){return t*t*t;}
+    function draw(p){
+        const W=wc.width,H=wc.height,cx=W/2,cy=H/2; wx.fillStyle=`rgba(0,0,0,${p<0.6?0.25+p*0.2:0.05})`; wx.fillRect(0,0,W,H);
+        const sm=p<0.6?ease(p/0.6)*15:15+ease((p-0.6)/0.4)*60; const tm=p<0.6?1+ease(p/0.6)*8:9+ease((p-0.6)/0.4)*40;
+        pts.forEach(pt=>{
+            const dx=pt.x-cx,dy=pt.y-cy,dist=Math.sqrt(dx*dx+dy*dy); const nx=dx/dist,ny=dy/dist; pt.x+=nx*pt.speed*sm;pt.y+=ny*pt.speed*sm;
+            if(pt.x<0||pt.x>W||pt.y<0||pt.y>H){ const a=Math.random()*Math.PI*2,r=Math.random()*30+5; pt.x=cx+Math.cos(a)*r;pt.y=cy+Math.sin(a)*r;pt.speed=Math.random()*3+1.5; }
+            const tl=pt.len*tm,tx=pt.x-nx*tl,ty=pt.y-ny*tl; const g=wx.createLinearGradient(tx,ty,pt.x,pt.y); g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(255,255,255,${pt.br})`); wx.beginPath();wx.moveTo(tx,ty);wx.lineTo(pt.x,pt.y); wx.strokeStyle=g;wx.lineWidth=1.5;wx.stroke();
+        });
+        if(p>0.75){wx.fillStyle=`rgba(255,255,255,${ease((p-0.75)/0.25)*0.9})`;wx.fillRect(0,0,W,H);}
+    }
+    function start(cb){ resize();init(); overlay.style.opacity='1';overlay.classList.add('active'); let t0=null; function tick(ts){ if(!t0)t0=ts; const p=Math.min((ts-t0)/DURATION,1); draw(p); if(p<1){requestAnimationFrame(tick);} else{overlay.style.opacity='0';overlay.classList.remove('active');cb();} } requestAnimationFrame(tick); }
+    window.addEventListener('resize',resize); return {start};
+})();
+
+// ===== NAVIGATION SPA =====
+const sections={};
+document.querySelectorAll('.section').forEach(s=>{ const id=s.id.replace('section-',''); sections[id]=s; });
+let currentSection='index';
+
+function changeSectionDirectly(target) {
+    Object.values(sections).forEach(s=>{s.classList.remove('active');});
+    if(sections[target]){ sections[target].classList.add('active'); currentSection=target; sections[target].scrollTop=0; }
+    
+    // TRÈS IMPORTANT : Redessine les lignes quand on arrive sur le hub !
+    if(target==='hub') {
+        setTimeout(drawConstellation, 100); 
+    }
+}
+
+function navigateTo(target){
+    if(target===currentSection)return;
+    if(currentSection === 'index' && target === 'hub') { WarpEngine.start(()=>{ changeSectionDirectly(target); }); } 
+    else { changeSectionDirectly(target); }
+}
+
+document.addEventListener('click',function(e){ const el=e.target.closest('[data-target]'); if(el){ e.preventDefault(); navigateTo(el.getAttribute('data-target')); } });
+document.getElementById('enter-btn').addEventListener('click',function(){ navigateTo('hub'); });
+
+// ===== CRAWL ANIMATION =====
+(function(){
+    const crawl=document.getElementById('crawl-text'); if(!crawl)return;
+    let pos=-120,manual=0;
+    function animate(){ pos+=0.095+manual; manual*=0.9; crawl.style.bottom=pos+'%'; if(pos<260)requestAnimationFrame(animate); }
+    window.addEventListener('wheel',e=>{manual+=(-e.deltaY*0.0008);},{passive:true});
+    animate();
+})();
+</script>
 </body>
 </html>
