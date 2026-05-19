@@ -80,10 +80,17 @@
         .crawl-perspective { width: 80%; max-width: 900px; height: 100%; transform: rotateX(25deg); transform-origin: center bottom; }
         .crawl-text { position: absolute; width: 100%; bottom: -120%; font-family: 'Orbitron', sans-serif; color: var(--accent); text-align: justify; font-size: clamp(1.1rem, 2vw, 1.8rem); line-height: 1.8; letter-spacing: 2px; text-shadow: 0 0 12px rgba(241,196,15,0.25); }
         .crawl-text h2 { text-align:center; font-size:clamp(1.8rem,4vw,3.5rem); margin-bottom:60px; }
-        .welcome-eyebrow { font-family: 'Orbitron', sans-serif; font-size: 0.65rem; letter-spacing: 6px; color: var(--accent); opacity: 0.6; text-transform: uppercase; margin-bottom: 30px; animation: wFadeIn 1.4s ease-out 0.3s both; z-index: 3; }
-        .enter-btn { display: inline-flex; align-items: center; gap: 14px; padding: 18px 56px; border: 1px solid var(--accent); color: var(--accent); font-family: 'Orbitron', sans-serif; font-size: 0.8rem; letter-spacing: 5px; text-transform: uppercase; background: transparent; cursor: pointer; position: relative; overflow: hidden; transition: 0.4s; z-index: 3; }
+        
+        /* Contrôles de l'intro masqués par défaut (opacity: 0) */
+        .welcome-eyebrow { font-family: 'Orbitron', sans-serif; font-size: 0.65rem; letter-spacing: 6px; color: var(--accent); opacity: 0; pointer-events: none; text-transform: uppercase; margin-bottom: 30px; position: relative; z-index: 3; }
+        .enter-btn { display: inline-flex; align-items: center; gap: 14px; padding: 18px 56px; border: 1px solid var(--accent); color: var(--accent); font-family: 'Orbitron', sans-serif; font-size: 0.8rem; letter-spacing: 5px; text-transform: uppercase; background: transparent; cursor: pointer; position: relative; overflow: hidden; transition: color 0.4s, box-shadow 0.4s; z-index: 3; opacity: 0; pointer-events: none; }
         .enter-btn::before { content:''; position:absolute; inset:0; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.45s cubic-bezier(0.19,1,0.22,1); z-index:0; }
         .enter-btn span { position:relative; z-index:1; } .enter-btn:hover { color:#000; box-shadow:0 0 50px rgba(241,196,15,0.35); } .enter-btn:hover::before { transform:scaleX(1); }
+        
+        /* Classes ajoutées dynamiquement via JS une fois le texte passé */
+        .show-controls .welcome-eyebrow { animation: wFadeIn 1.4s ease-out forwards; pointer-events: auto; }
+        .show-controls .enter-btn { animation: wFadeIn 1.4s ease-out 0.8s forwards; pointer-events: auto; }
+
         @keyframes wFadeIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 
         /* ===== CONSTELLATION HUB ===== */
@@ -170,6 +177,7 @@
             </div>
         </div>
     </div>
+    
     <p class="welcome-eyebrow">Webdocumentaire · BUT Informatique Toulouse</p>
     <button class="enter-btn" id="enter-btn"><span>▶&nbsp;&nbsp;Explorer</span></button>
 </div>
@@ -315,34 +323,24 @@
     animate(); window.addEventListener('resize',resize);
 })();
 
-// =================================================================
-// ===== VOTRE SCRIPT EXACT POUR LES LIGNES DE LA CONSTELLATION ====
-// =================================================================
+// ===== CONSTELLATION =====
 function drawConstellation() {
     const svg = document.getElementById('constellation-svg');
     if (!svg) return;
     
     svg.innerHTML = '';
-
     const nodes = document.querySelectorAll('#section-hub .node');
     if (nodes.length < 2) return;
 
-    // Attendre que la section soit bien affichée pour calculer les coordonnées
     const svgRect = svg.getBoundingClientRect();
-    if (svgRect.width === 0) {
-        setTimeout(drawConstellation, 50); // relance si largeur = 0
-        return;
-    }
+    if (svgRect.width === 0) { setTimeout(drawConstellation, 50); return; }
 
     const connections = generateRandomConnections(nodes.length);
     const nodePoints = [];
     
     nodes.forEach(node => {
         const rect = node.getBoundingClientRect();
-        nodePoints.push({
-            x: rect.left + rect.width / 2 - svgRect.left,
-            y: rect.top + rect.height / 2 - svgRect.top
-        });
+        nodePoints.push({ x: rect.left + rect.width / 2 - svgRect.left, y: rect.top + rect.height / 2 - svgRect.top });
     });
 
     const svgNS = "http://www.w3.org/2000/svg";
@@ -351,12 +349,8 @@ function drawConstellation() {
         const end = nodePoints[pair[1]];
 
         const line = document.createElementNS(svgNS, "line");
-        line.setAttribute("x1", start.x);
-        line.setAttribute("y1", start.y);
-        line.setAttribute("x2", end.x);
-        line.setAttribute("y2", end.y);
-        
-        // CSS injecté directement sur les traits pour s'assurer qu'ils soient visibles !
+        line.setAttribute("x1", start.x); line.setAttribute("y1", start.y);
+        line.setAttribute("x2", end.x); line.setAttribute("y2", end.y);
         line.style.stroke = "rgba(255, 255, 255, 0.4)";
         line.style.strokeWidth = "2";
         line.style.filter = "drop-shadow(0 0 5px rgba(255,255,255,0.8))";
@@ -364,39 +358,23 @@ function drawConstellation() {
         svg.appendChild(line);
     });
 }
-
 function generateRandomConnections(numNodes) {
-    const pairs = [];
-    const existingConnections = new Set();
-    const availableNodes = Array.from({length: numNodes}, (_, i) => i);
+    const pairs = []; const existingConnections = new Set(); const availableNodes = Array.from({length: numNodes}, (_, i) => i);
     shuffleArray(availableNodes); 
-    for (let i = 0; i < availableNodes.length - 1; i++) {
-        addConnection(availableNodes[i], availableNodes[i+1], pairs, existingConnections);
-    }
+    for (let i = 0; i < availableNodes.length - 1; i++) { addConnection(availableNodes[i], availableNodes[i+1], pairs, existingConnections); }
     for (let i = 0; i < 3; i++) {
-        const n1 = Math.floor(Math.random() * numNodes);
-        let n2 = Math.floor(Math.random() * numNodes);
-        while (n1 === n2) {
-            n2 = Math.floor(Math.random() * numNodes);
-        }
+        const n1 = Math.floor(Math.random() * numNodes); let n2 = Math.floor(Math.random() * numNodes);
+        while (n1 === n2) { n2 = Math.floor(Math.random() * numNodes); }
         addConnection(n1, n2, pairs, existingConnections);
     }
     return pairs;
 }
-
 function addConnection(id1, id2, pairsArr, setObj) {
     const key = [id1, id2].sort().join('-'); 
-    if (!setObj.has(key)) {
-        setObj.add(key);
-        pairsArr.push([id1, id2]);
-    }
+    if (!setObj.has(key)) { setObj.add(key); pairsArr.push([id1, id2]); }
 }
-
 function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
+    for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; }
 }
 window.addEventListener('resize', drawConstellation);
 
@@ -446,11 +424,7 @@ let currentSection='index';
 function changeSectionDirectly(target) {
     Object.values(sections).forEach(s=>{s.classList.remove('active');});
     if(sections[target]){ sections[target].classList.add('active'); currentSection=target; sections[target].scrollTop=0; }
-    
-    // TRÈS IMPORTANT : Redessine les lignes quand on arrive sur le hub !
-    if(target==='hub') {
-        setTimeout(drawConstellation, 100); 
-    }
+    if(target==='hub') { setTimeout(drawConstellation, 100); }
 }
 
 function navigateTo(target){
@@ -462,12 +436,45 @@ function navigateTo(target){
 document.addEventListener('click',function(e){ const el=e.target.closest('[data-target]'); if(el){ e.preventDefault(); navigateTo(el.getAttribute('data-target')); } });
 document.getElementById('enter-btn').addEventListener('click',function(){ navigateTo('hub'); });
 
-// ===== CRAWL ANIMATION =====
+// ===== CRAWL ANIMATION ET APPARITION DU BOUTON =====
 (function(){
-    const crawl=document.getElementById('crawl-text'); if(!crawl)return;
-    let pos=-120,manual=0;
-    function animate(){ pos+=0.095+manual; manual*=0.9; crawl.style.bottom=pos+'%'; if(pos<260)requestAnimationFrame(animate); }
-    window.addEventListener('wheel',e=>{manual+=(-e.deltaY*0.0008);},{passive:true});
+    const crawl=document.getElementById('crawl-text'); 
+    const introSection=document.getElementById('section-index');
+    if(!crawl)return;
+    
+    let pos=-120, manual=0;
+    let isDone = false; // Permet de savoir si le texte a fini de passer
+    
+    function animate(){ 
+        pos+=0.095+manual; 
+        manual*=0.9; 
+        crawl.style.bottom=pos+'%'; 
+        
+        // Si le texte est monté suffisamment haut (hors de l'écran), on affiche le bouton
+        if(pos > 180 && !isDone) {
+            introSection.classList.add('show-controls');
+            isDone = true;
+        }
+        
+        if(pos<260) requestAnimationFrame(animate); 
+    }
+    
+    // Le scroll accélère le texte
+    window.addEventListener('wheel',e=>{
+        if(currentSection === 'index') {
+            manual+=(-e.deltaY*0.0008);
+        }
+    },{passive:true});
+    
+    // ASTUCE UX : Si l'utilisateur clique n'importe où (sauf sur le lecteur audio), on passe le texte direct
+    document.addEventListener('click', function(e) {
+        if(currentSection === 'index' && !isDone && !e.target.closest('#audio-player')) {
+            pos = 200; // Fait monter le texte d'un coup
+            introSection.classList.add('show-controls'); // Affiche le bouton
+            isDone = true;
+        }
+    });
+
     animate();
 })();
 </script>
