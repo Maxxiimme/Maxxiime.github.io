@@ -89,8 +89,8 @@
         .ring:nth-child(1) { width:380px; height:380px; } .ring:nth-child(2) { width:620px; height:620px; animation-delay:1.2s; } .ring:nth-child(3) { width:880px; height:880px; animation-delay:2.4s; }
         @keyframes ringPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
         .crawl-container { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-end; perspective: 500px; overflow: hidden; z-index: 2; pointer-events: none; }
-        .crawl-perspective { width: 80%; max-width: 900px; height: 100%; transform: rotateX(25deg); transform-origin: center bottom; }
-        .crawl-text { position: absolute; width: 100%; bottom: -120%; font-family: 'Orbitron', sans-serif; color: var(--accent); text-align: justify; font-size: clamp(1.1rem, 2vw, 1.8rem); line-height: 1.8; letter-spacing: 2px; text-shadow: 0 0 12px rgba(241,196,15,0.25); }
+        .crawl-perspective { width: 80%; max-width: 500px; height: 100%; transform: rotateX(17deg); transform-origin: center bottom; }
+        .crawl-text { position: absolute; width: 100%; bottom: -120%; font-family: 'Orbitron', sans-serif; color: var(--accent); text-align: justify; font-size: clamp(1.1rem, 2vw, 3.8rem); line-height: 1.8; letter-spacing: 2px; text-shadow: 0 0 12px rgba(241,196,15,0.25); }
         .crawl-text h2 { text-align:center; font-size:clamp(1.8rem,4vw,3.5rem); margin-bottom:60px; }
         
         .welcome-eyebrow { font-family: 'Orbitron', sans-serif; font-size: 0.65rem; letter-spacing: 6px; color: var(--accent); opacity: 0; pointer-events: none; text-transform: uppercase; margin-bottom: 30px; position: relative; z-index: 3; }
@@ -101,6 +101,32 @@
         .show-controls .welcome-eyebrow { animation: wFadeIn 1.4s ease-out forwards; pointer-events: auto; }
         .show-controls .enter-btn { animation: wFadeIn 1.4s ease-out 0.8s forwards; pointer-events: auto; }
 
+
+		/* ===== TEXTE "APPUYEZ POUR PASSER" ===== */
+        .skip-hint {
+            position: absolute;
+            bottom: 40px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            color: rgba(224, 230, 237, 0.5);
+            text-transform: uppercase;
+            animation: pulseHint 2s infinite;
+            z-index: 10;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        @keyframes pulseHint {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Masque automatiquement le texte quand le bouton Explorer apparaît */
+        .show-controls .skip-hint {
+            opacity: 0;
+            pointer-events: none;
+        }
         @keyframes wFadeIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 
         /* ===== CONSTELLATION HUB ===== */
@@ -127,6 +153,12 @@
         .n4{top:70%;left:25%}  /* Agir */
         
         .hub-footer { text-align: center; padding: 10px; z-index: 5;}
+		
+		
+		
+		.checklist { margin: 20px 0; line-height: 2; font-family: 'Rajdhani', sans-serif; }
+.checklist label { cursor: pointer; display: flex; align-items: center; gap: 10px; }
+.eco-check { accent-color: var(--accent); width: 18px; height: 18px; }
         
         /* Bouton "Commencer" */
         .start-zone { position: fixed; bottom: 40px; right: 50px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 100; animation: fadeIn 1s ease-out 0.4s both; }
@@ -160,7 +192,7 @@
 
 <canvas id="star-canvas"></canvas>
 
-<audio id="bg-audio" loop>
+<audio id="bg-audio" loop autoplay>
     <source src="Orbiting_the_Unseen_Shore.mp3" type="audio/mpeg">
 </audio>
 
@@ -179,6 +211,7 @@
 
 <div class="section active" id="section-index">
     <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+	<div class="skip-hint">Appuyez n'importe où pour passer l'introduction</div>
     <div class="crawl-container" id="crawl-container">
         <div class="crawl-perspective">
             <div class="crawl-text" id="crawl-text">
@@ -235,7 +268,26 @@
             <p>Aujourd'hui, l'obscurité totale est en voie d'extinction. Le développement urbain anarchique a transformé nos nuits en un crépuscule artificiel permanent. Ce phénomène est matérialisé par le <strong>halo lumineux</strong>, cette immense cloche de lumière diffuse visible à des dizaines de kilomètres au-dessus des agglomérations.</p>
             <p>À Toulouse et dans sa périphérie, le ciel nocturne est désormais <strong>20 fois plus brillant</strong> qu'il ne devrait l'être naturellement. Plus de 80% de la population mondiale vit aujourd'hui sous un ciel pollué par la lumière, nous privant ainsi de la contemplation des étoiles.</p>
             
-            <div class="media-placeholder">[ INTERACTIVE SLIDER : CIEL URBAIN VS CIEL ÉTOILÉ ]</div>
+           <div style="width: 100%; height: 450px; margin: 25px 0; border-radius: 15px; overflow: hidden; border: 1px solid var(--border);">
+    <iframe 
+        src="https://www.lightpollutionmap.info/" 
+        width="100%" 
+        height="100%" 
+        style="border:none;" 
+        allowfullscreen 
+        loading="lazy">
+    </iframe>
+</div>
+<div style="width: 100%; margin: 25px 0; border-radius: 15px; overflow: hidden; border: 1px solid var(--border); background: rgba(0,0,0,0.2);">
+    <img 
+        src="polution.jpg" 
+        alt="Exemple de pollution lumineuse en ville" 
+        style="width: 100%; height: auto; display: block; filter: drop-shadow(0 0 10px rgba(255,255,255,0.05));"
+    />
+    <p style="font-size: 0.85rem; color: rgba(224,230,237,0.5); font-style: italic; padding: 12px 15px; margin: 0; background: rgba(2,4,8,0.6); border-top: 1px solid var(--border);">
+        Exemple de halo lumineux urbain masquant la voûte céleste.
+    </p>
+</div>
             
             <p>La lumière artificielle n'est plus seulement synonyme de sécurité ou de modernité ; elle est devenue une nuisance globale, mesurable par des outils scientifiques comme l'échelle de Bortle, qui classe la noirceur du ciel de 1 (ciel pur) à 9 (hyper-centre métropolitain).</p>
             <div class="next-footer"><button class="next-btn" data-target="impacts">Découvrir les impacts →</button></div>
@@ -258,15 +310,30 @@
             
             <h2>1. La Biodiversité en Péril</h2>
             <p>La pollution lumineuse constitue le <strong>deuxième facteur d'extinction des insectes</strong> à l'échelle mondiale. Attirés par la chaleur et le rayonnement des ampoules, ils s'y épuisent et meurent en masse. Pour les oiseaux migrateurs, ces lumières agissent comme des pièges directionnels, provoquant des désorientations fatales.</p>
-            
+            <div style="width: 100%; margin: 25px 0; border-radius: 15px; overflow: hidden; border: 1px solid var(--border); background: rgba(0,0,0,0.2);">
+    <img 
+        src="insect.jpg" 
+         
+        style="width: 100%; height: auto; display: block; filter: drop-shadow(0 0 10px rgba(255,255,255,0.05));"
+    />
+    
+</div>
             <h2>2. La Santé Humaine Altérée</h2>
             <p>L'exposition prolongée aux lumières artificielles nocturnes (notamment les LED blanches/bleues) bloque la production de <strong>mélatonine</strong>, l'hormone maîtresse du sommeil. Cela perturbe gravement notre cycle circadien, entraînant insomnies, stress et troubles de la concentration.</p>
             
-            <div class="media-placeholder">[ INFOGRAPHIE : CYCLES BIOLOGIQUES & SYNTHÈSE DE LA MÉLATONINE ]</div>
+             <img 
+        src="nuit.jpg" 
+         
+        style="width: 100%; height: auto; display: block; filter: drop-shadow(0 0 10px rgba(255,255,255,0.05));"
+    />
             
             <h2>3. Le Droit à la Nuit et l'Astronomie</h2>
             <p>Pour les scientifiques et les astronomes, la lumière artificielle est un "bruit" permanent qui sature les capteurs des télescopes. Au-delà de la science, c'est notre patrimoine culturel et universel qui s'efface : une grande partie des nouvelles générations n'a ainsi jamais eu la chance de contempler la Voie Lactée.</p>
-            
+             <img 
+        src="astro.jpg" 
+         
+        style="width: 100%; height: auto; display: block; filter: drop-shadow(0 0 10px rgba(255,255,255,0.05));"
+    />
             <div class="next-footer"><button class="next-btn" data-target="solutions">Explorer les solutions →</button></div>
         </div>
     </div>
@@ -347,10 +414,24 @@
                 <li><strong>Installer des détecteurs :</strong> Remplacez vos interrupteurs extérieurs permanents par des capteurs de présence pour n'éclairer que lorsque cela est strictement requis.</li>
             </ul>
 
-            <div class="media-placeholder">[ MODULE INTERACTIF : CHECKLIST DE MON EMPREINTE LUMINEUSE ]</div>
+            <div class="card" id="checklist-card">
+    <h2>Mon Empreinte Lumineuse</h2>
+    <p>Cochez les actions que vous avez déjà mises en place :</p>
+    
+    <div class="checklist">
+        <label><input type="checkbox" class="eco-check" value="1"> Je ferme mes volets à la tombée de la nuit</label><br>
+        <label><input type="checkbox" class="eco-check" value="1"> Mon éclairage extérieur est orienté vers le bas</label><br>
+        <label><input type="checkbox" class="eco-check" value="1"> J'utilise des ampoules de couleur chaude</label><br>
+        <label><input type="checkbox" class="eco-check" value="1"> J'ai installé des détecteurs de présence</label>
+    </div>
+
+    <div style="margin-top: 20px; font-weight: bold; color: var(--accent);">
+        Score : <span id="eco-score">0</span> / 4
+    </div>
+</div>
 
             <h2>Devenez Sentinelle de la Nuit</h2>
-            <p>Grâce à des applications de sciences participatives comme <strong>"Gueule de Nuit"</strong>, vous pouvez cartographier les abus et recenser les commerces ou bureaux qui ne respectent pas la loi sur l'extinction des vitrines après 1h du matin. Sensibiliser son entourage et interpeller ses élus locaux sont les premiers pas pour redonner une place légitime à la nuit.</p>
+            <p>Grâce à des applications de sciences participatives comme <strong>"sentinelles de la nature"</strong>, vous pouvez cartographier les abus et recenser les commerces ou bureaux qui ne respectent pas la loi sur l'extinction des vitrines après 1h du matin. Sensibiliser son entourage et interpeller ses élus locaux sont les premiers pas pour redonner une place légitime à la nuit.</p>
             
             <div class="next-footer"><button class="next-btn" data-target="hub">Retour au Hub Constellation →</button></div>
         </div>
@@ -465,6 +546,18 @@ const WarpEngine=(function(){
     window.addEventListener('resize',resize); return {start};
 })();
 
+
+
+document.addEventListener('change', function(e) {
+    if (e.target.classList.contains('eco-check')) {
+        let score = 0;
+        document.querySelectorAll('.eco-check').forEach(checkbox => {
+            if (checkbox.checked) score += parseInt(checkbox.value);
+        });
+        document.getElementById('eco-score').textContent = score;
+    }
+});
+
 // ===== NAVIGATION SPA =====
 const sections={};
 document.querySelectorAll('.section').forEach(s=>{ const id=s.id.replace('section-',''); sections[id]=s; });
@@ -484,18 +577,18 @@ function navigateTo(target){
 
 document.addEventListener('click',function(e){ const el=e.target.closest('[data-target]'); if(el){ e.preventDefault(); navigateTo(el.getAttribute('data-target')); } });
 document.getElementById('enter-btn').addEventListener('click',function(){ navigateTo('hub'); });
-
 // ===== CRAWL ANIMATION ET APPARITION DU BOUTON =====
 (function(){
     const crawl=document.getElementById('crawl-text'); 
     const introSection=document.getElementById('section-index');
     if(!crawl)return;
     
-    let pos=-120, manual=0;
-    let isDone = false;
+    let pos=-80, manual=0; // Démarre plus haut pour apparaître plus vite
+    let isDone = false; 
+    let firstClickIgnored = false; // <-- NOUVELLE RÈGLE
     
     function animate(){ 
-        pos+=0.095+manual; 
+        pos+=0.055+manual; // Modifiez 0.095 ici si vous voulez changer la vitesse
         manual*=0.9; 
         crawl.style.bottom=pos+'%'; 
         
@@ -508,11 +601,22 @@ document.getElementById('enter-btn').addEventListener('click',function(){ naviga
     }
     
     window.addEventListener('wheel',e=>{
-        if(currentSection === 'index') { manual+=(-e.deltaY*0.0008); }
+        if(currentSection === 'index') {
+            manual+=(-e.deltaY*0.0008);
+        }
     },{passive:true});
     
+    // CORRECTION DU CONFLIT : On sépare l'activation du son et le saut de l'intro
     document.addEventListener('click', function(e) {
         if(currentSection === 'index' && !isDone && !e.target.closest('#audio-player')) {
+            
+            // 1. Si c'est le tout premier clic, on le laisse juste lancer la musique
+            if (!firstClickIgnored) {
+                firstClickIgnored = true;
+                return; // On arrête la fonction ici, on ne coupe pas le texte
+            }
+            
+            // 2. Aux clics suivants, on passe le texte
             pos = 200; 
             introSection.classList.add('show-controls'); 
             isDone = true;
