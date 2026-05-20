@@ -62,14 +62,26 @@
         nav a:hover, nav a.active { color: var(--accent); opacity: 1; text-shadow: 0 0 10px var(--accent); }
 
         /* ===== CONTENU PAGES ===== */
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; animation: fadeIn 0.8s ease-out; }
-        .card { background: var(--glass); border: 1px solid var(--border); padding: 50px; border-radius: 25px; backdrop-filter: blur(10px); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
-        h1 { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; color: var(--accent); text-shadow: 0 0 20px rgba(241,196,15,0.4); margin-bottom: 20px; text-align: center; text-transform: uppercase; letter-spacing: 2px; }
-        p { margin-bottom: 16px; line-height: 1.7; font-size: 1.05rem; }
-        .media-placeholder { width: 100%; height: 300px; background: rgba(0,0,0,0.4); border: 1px dashed var(--border); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 25px 0; color: #4a4d52; font-style: italic; text-transform: uppercase; font-size: 0.85rem; }
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; animation: fadeIn 0.8s ease-out; padding-bottom: 60px; }
+        .card { background: var(--glass); border: 1px solid var(--border); padding: 50px; border-radius: 25px; backdrop-filter: blur(10px); box-shadow: 0 15px 35px rgba(0,0,0,0.6); margin-bottom: 30px; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; color: var(--accent); text-shadow: 0 0 20px rgba(241,196,15,0.4); margin-bottom: 25px; text-align: center; text-transform: uppercase; letter-spacing: 2px; }
+        h2 { font-family: 'Orbitron', sans-serif; font-size: 1.4rem; color: var(--accent); margin: 30px 0 15px 0; letter-spacing: 1px; }
+        p { margin-bottom: 16px; line-height: 1.7; font-size: 1.1rem; color: rgba(224,230,237,0.85); }
+        strong { color: var(--accent); font-weight: 600; }
+        ul { margin-bottom: 20px; padding-left: 20px; }
+        li { margin-bottom: 10px; line-height: 1.6; font-size: 1.05rem; color: rgba(224,230,237,0.85); }
+        
+        .media-placeholder { width: 100%; height: 350px; background: rgba(0,0,0,0.4); border: 1px dashed var(--border); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 25px 0; color: var(--accent); font-style: italic; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 2px; box-shadow: inset 0 0 20px rgba(0,0,0,0.6); }
         .next-footer { display: flex; justify-content: flex-end; margin-top: 40px; border-top: 1px solid var(--border); padding-top: 30px; }
         .next-btn { padding: 12px 30px; background: transparent; color: var(--accent); border: 1px solid var(--accent); font-family: 'Orbitron', sans-serif; font-size: 0.78rem; letter-spacing: 2px; cursor: pointer; transition: 0.4s; text-transform: uppercase; }
-        .next-btn:hover { background: var(--accent); color: #000; }
+        .next-btn:hover { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent); }
+
+        /* ===== TABLEAU COMPARATIF STYLISÉ ===== */
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 30px 0; background: rgba(0,0,0,0.2); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+        .comparison-table th, .comparison-table td { padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--border); }
+        .comparison-table th { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--accent); letter-spacing: 1px; background: rgba(255,255,255,0.02); text-transform: uppercase; }
+        .comparison-table tr:last-child td { border-bottom: none; }
+        .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
 
         /* ===== INDEX — INTRO ===== */
         #section-index { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 140px; overflow: hidden; }
@@ -81,13 +93,11 @@
         .crawl-text { position: absolute; width: 100%; bottom: -120%; font-family: 'Orbitron', sans-serif; color: var(--accent); text-align: justify; font-size: clamp(1.1rem, 2vw, 1.8rem); line-height: 1.8; letter-spacing: 2px; text-shadow: 0 0 12px rgba(241,196,15,0.25); }
         .crawl-text h2 { text-align:center; font-size:clamp(1.8rem,4vw,3.5rem); margin-bottom:60px; }
         
-        /* Contrôles de l'intro masqués par défaut (opacity: 0) */
         .welcome-eyebrow { font-family: 'Orbitron', sans-serif; font-size: 0.65rem; letter-spacing: 6px; color: var(--accent); opacity: 0; pointer-events: none; text-transform: uppercase; margin-bottom: 30px; position: relative; z-index: 3; }
         .enter-btn { display: inline-flex; align-items: center; gap: 14px; padding: 18px 56px; border: 1px solid var(--accent); color: var(--accent); font-family: 'Orbitron', sans-serif; font-size: 0.8rem; letter-spacing: 5px; text-transform: uppercase; background: transparent; cursor: pointer; position: relative; overflow: hidden; transition: color 0.4s, box-shadow 0.4s; z-index: 3; opacity: 0; pointer-events: none; }
         .enter-btn::before { content:''; position:absolute; inset:0; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.45s cubic-bezier(0.19,1,0.22,1); z-index:0; }
         .enter-btn span { position:relative; z-index:1; } .enter-btn:hover { color:#000; box-shadow:0 0 50px rgba(241,196,15,0.35); } .enter-btn:hover::before { transform:scaleX(1); }
         
-        /* Classes ajoutées dynamiquement via JS une fois le texte passé */
         .show-controls .welcome-eyebrow { animation: wFadeIn 1.4s ease-out forwards; pointer-events: auto; }
         .show-controls .enter-btn { animation: wFadeIn 1.4s ease-out 0.8s forwards; pointer-events: auto; }
 
@@ -110,14 +120,16 @@
         .node span { font-family: 'Orbitron', sans-serif; font-size: 0.7rem; font-weight: 700; color: rgba(241,196,15,0.55); text-align: center; letter-spacing: 1.5px; padding: 8px; text-shadow: 1px 1px 4px rgba(0,0,0,0.8); }
         .node:hover span { color: var(--accent); }
 
-        .n1{top:25%;left:40%} .n2{top:35%;left:65%} .n3{top:55%;left:75%}
-        .n4{top:75%;left:55%} .n5{top:70%;left:30%} .n6{top:45%;left:20%}
+        /* Ajustement des positions pour un rendu harmonieux à 4 sommets majeurs */
+        .n1{top:30%;left:25%}  /* Constat */
+        .n2{top:30%;left:75%}  /* Impacts */
+        .n3{top:70%;left:75%}  /* Solutions */
+        .n4{top:70%;left:25%}  /* Agir */
         
         .hub-footer { text-align: center; padding: 10px; z-index: 5;}
         
         /* Bouton "Commencer" */
         .start-zone { position: fixed; bottom: 40px; right: 50px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 100; animation: fadeIn 1s ease-out 0.4s both; }
-        .start-hint { font-family: 'Rajdhani', sans-serif; font-size: 0.68rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(224,230,237,0.3); }
         .start-btn { display: inline-flex; align-items: center; gap: 14px; padding: 16px 52px; border: 1px solid var(--accent); color: var(--accent); font-family: 'Orbitron', sans-serif; font-size: 0.78rem; letter-spacing: 5px; text-transform: uppercase; background: transparent; cursor: pointer; position: relative; overflow: hidden; transition: 0.4s; }
         .start-btn::before { content:''; position:absolute; inset:0; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.45s cubic-bezier(0.19,1,0.22,1); z-index:0; }
         .start-btn span,.start-btn .arrow { position:relative; z-index:1; }
@@ -193,12 +205,10 @@
         <main class="constellation-nav" id="hub-container">
             <svg class="constellation-lines" id="constellation-svg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></svg>
             
-            <div class="node n1" data-target="science"><div class="node-content"><span>Science</span></div></div>
-            <div class="node n2" data-target="data"><div class="node-content"><span>Data</span></div></div>
-            <div class="node n3" data-target="biodiv"><div class="node-content"><span>Vivant</span></div></div>
-            <div class="node n4" data-target="sentinelles"><div class="node-content"><span>Militants</span></div></div>
-            <div class="node n5" data-target="solutions"><div class="node-content"><span>Futur</span></div></div>
-            <div class="node n6" data-target="index"><div class="node-content"><span>Bilan</span></div></div>
+            <div class="node n1" data-target="constat"><div class="node-content"><span>Le Constat</span></div></div>
+            <div class="node n2" data-target="impacts"><div class="node-content"><span>Les Impacts</span></div></div>
+            <div class="node n3" data-target="solutions"><div class="node-content"><span>Solutions</span></div></div>
+            <div class="node n4" data-target="agir"><div class="node-content"><span>Et Moi ?</span></div></div>
         </main>
 
         <footer class="hub-footer">
@@ -207,83 +217,57 @@
     </div>
 
     <div class="start-zone" id="hub-start-zone">
-        <span class="start-hint">Début du parcours</span>
-        <button class="start-btn" data-target="science"><span>Commencer</span><span class="arrow">→</span></button>
+        <button class="start-btn" data-target="constat"><span>Commencer</span><span class="arrow">→</span></button>
     </div>
 </div>
 
-<div class="section" id="section-science">
+<div class="section" id="section-constat">
     <nav>
         <a data-target="hub">HUB</a>
-        <a data-target="science" class="active">Expertise</a>
-        <a data-target="data">Data</a>
-        <a data-target="biodiv">Vivant</a>
-        <a data-target="sentinelles">Sentinelles</a>
+        <a data-target="constat" class="active">Le Constat</a>
+        <a data-target="impacts">Les Impacts</a>
         <a data-target="solutions">Solutions</a>
+        <a data-target="agir">Et Moi ?</a>
     </nav>
     <div class="container">
         <div class="card">
-            <h1>L'Œil de l'Expert</h1>
-            <p>Pour un astronome, la lumière artificielle est un "bruit" qui sature les capteurs. À Toulouse, le ciel est 20 fois plus brillant qu'il ne devrait l'être naturellement.</p>
-            <div class="media-placeholder">[ INTERVIEW / SLIDER ]</div>
-            <div class="next-footer"><button class="next-btn" data-target="data">Voir les chiffres →</button></div>
+            <h1>Le Constat Nocturne</h1>
+            <p>Aujourd'hui, l'obscurité totale est en voie d'extinction. Le développement urbain anarchique a transformé nos nuits en un crépuscule artificiel permanent. Ce phénomène est matérialisé par le <strong>halo lumineux</strong>, cette immense cloche de lumière diffuse visible à des dizaines de kilomètres au-dessus des agglomérations.</p>
+            <p>À Toulouse et dans sa périphérie, le ciel nocturne est désormais <strong>20 fois plus brillant</strong> qu'il ne devrait l'être naturellement. Plus de 80% de la population mondiale vit aujourd'hui sous un ciel pollué par la lumière, nous privant ainsi de la contemplation des étoiles.</p>
+            
+            <div class="media-placeholder">[ INTERACTIVE SLIDER : CIEL URBAIN VS CIEL ÉTOILÉ ]</div>
+            
+            <p>La lumière artificielle n'est plus seulement synonyme de sécurité ou de modernité ; elle est devenue une nuisance globale, mesurable par des outils scientifiques comme l'échelle de Bortle, qui classe la noirceur du ciel de 1 (ciel pur) à 9 (hyper-centre métropolitain).</p>
+            <div class="next-footer"><button class="next-btn" data-target="impacts">Découvrir les impacts →</button></div>
         </div>
     </div>
 </div>
 
-<div class="section" id="section-data">
+<div class="section" id="section-impacts">
     <nav>
         <a data-target="hub">HUB</a>
-        <a data-target="science">Expertise</a>
-        <a data-target="data" class="active">Data</a>
-        <a data-target="biodiv">Vivant</a>
-        <a data-target="sentinelles">Sentinelles</a>
+        <a data-target="constat">Le Constat</a>
+        <a data-target="impacts" class="active">Les Impacts</a>
         <a data-target="solutions">Solutions</a>
+        <a data-target="agir">Et Moi ?</a>
     </nav>
     <div class="container">
         <div class="card">
-            <h1>La Terre Vue d'en Haut</h1>
-            <p>L'échelle de Bortle mesure la noirceur du ciel de 1 (ciel pur) à 9 (centre-ville).</p>
-            <div class="media-placeholder">[ CARTE INTERACTIVE ]</div>
-            <div class="next-footer"><button class="next-btn" data-target="biodiv">Impact sur le vivant →</button></div>
-        </div>
-    </div>
-</div>
-
-<div class="section" id="section-biodiv">
-    <nav>
-        <a data-target="hub">HUB</a>
-        <a data-target="science">Expertise</a>
-        <a data-target="data">Data</a>
-        <a data-target="biodiv" class="active">Vivant</a>
-        <a data-target="sentinelles">Sentinelles</a>
-        <a data-target="solutions">Solutions</a>
-    </nav>
-    <div class="container">
-        <div class="card">
-            <h1>Le Sommeil du Vivant</h1>
-            <p>La pollution lumineuse est le deuxième facteur d'extinction des insectes.</p>
-            <div class="media-placeholder">[ VIVANT ]</div>
-            <div class="next-footer"><button class="next-btn" data-target="sentinelles">Les Sentinelles →</button></div>
-        </div>
-    </div>
-</div>
-
-<div class="section" id="section-sentinelles">
-    <nav>
-        <a data-target="hub">HUB</a>
-        <a data-target="science">Expertise</a>
-        <a data-target="data">Data</a>
-        <a data-target="biodiv">Vivant</a>
-        <a data-target="sentinelles" class="active">Sentinelles</a>
-        <a data-target="solutions">Solutions</a>
-    </nav>
-    <div class="container">
-        <div class="card">
-            <h1>Les Sentinelles</h1>
-            <p>Des citoyens et astronomes se battent pour labelliser des "Villes et Villages Étoilés".</p>
-            <div class="media-placeholder">[ REPORTAGE ]</div>
-            <div class="next-footer"><button class="next-btn" data-target="solutions">Les Solutions →</button></div>
+            <h1>Une Nuit sous Pression</h1>
+            <p>La perte de la nuit noire engendre des conséquences graves et mesurables sur trois grands piliers de notre écosystème :</p>
+            
+            <h2>1. La Biodiversité en Péril</h2>
+            <p>La pollution lumineuse constitue le <strong>deuxième facteur d'extinction des insectes</strong> à l'échelle mondiale. Attirés par la chaleur et le rayonnement des ampoules, ils s'y épuisent et meurent en masse. Pour les oiseaux migrateurs, ces lumières agissent comme des pièges directionnels, provoquant des désorientations fatales.</p>
+            
+            <h2>2. La Santé Humaine Altérée</h2>
+            <p>L'exposition prolongée aux lumières artificielles nocturnes (notamment les LED blanches/bleues) bloque la production de <strong>mélatonine</strong>, l'hormone maîtresse du sommeil. Cela perturbe gravement notre cycle circadien, entraînant insomnies, stress et troubles de la concentration.</p>
+            
+            <div class="media-placeholder">[ INFOGRAPHIE : CYCLES BIOLOGIQUES & SYNTHÈSE DE LA MÉLATONINE ]</div>
+            
+            <h2>3. Le Droit à la Nuit et l'Astronomie</h2>
+            <p>Pour les scientifiques et les astronomes, la lumière artificielle est un "bruit" permanent qui sature les capteurs des télescopes. Au-delà de la science, c'est notre patrimoine culturel et universel qui s'efface : une grande partie des nouvelles générations n'a ainsi jamais eu la chance de contempler la Voie Lactée.</p>
+            
+            <div class="next-footer"><button class="next-btn" data-target="solutions">Explorer les solutions →</button></div>
         </div>
     </div>
 </div>
@@ -291,22 +275,87 @@
 <div class="section" id="section-solutions">
     <nav>
         <a data-target="hub">HUB</a>
-        <a data-target="science">Expertise</a>
-        <a data-target="data">Data</a>
-        <a data-target="biodiv">Vivant</a>
-        <a data-target="sentinelles">Sentinelles</a>
+        <a data-target="constat">Le Constat</a>
+        <a data-target="impacts">Les Impacts</a>
         <a data-target="solutions" class="active">Solutions</a>
+        <a data-target="agir">Et Moi ?</a>
     </nav>
     <div class="container">
         <div class="card">
-            <h1>Rallumer les étoiles</h1>
-            <p>Rallumer les étoiles est possible. Voici les technologies qui changent la donne :</p>
-            <div class="media-placeholder">[ SCHÉMA ]</div>
-            <div class="next-footer"><button class="next-btn" data-target="hub">Retour au Hub →</button></div>
+            <h1>Rallumer les Étoiles</h1>
+            <p>Des solutions technologiques et législatives concrètes existent pour inverser la tendance. Bien éclairer ne signifie pas éteindre toute la ville, mais projeter <strong>la juste quantité de lumière, là où il faut, et quand il le faut</strong>.</p>
+            
+            <h2>Notre enquête sur le terrain : Le match des lampadaires</h2>
+            <p>Nous avons arpenté les rues pour photographier et analyser l'éclairage public actuel. Découvrez notre vidéo comparative mettant en lumière les bons et les mauvais élèves de l'aménagement nocturne :</p>
+            
+            <div class="media-placeholder">
+                <video controls width="100%" height="100%" src="reportage.mp4" style="border-radius:15px; object-fit: cover;">
+                    <source src="votre_video.mp4" type="video/mp4">
+                    [ VOTRE VIDÉO COMPARATIVE : LES LAMPADARES SUR LE TERRAIN ]
+                </video>
+            </div>
+            
+            <h2>Comparatif Technique du Mobilier Urbain</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Modèle obsolète (ex: Boule)</th>
+                        <th>Modèle vertueux (Éco-conçu)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Orientation :</strong> Éclaire à plus de 50% vers le ciel et les façades, générant une déperdition totale.</td>
+                        <td><strong>Orientation :</strong> Flux lumineux dirigé à 100% vers le sol grâce à un cache intégré.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spectre :</strong> Lumière blanche/bleue froide intense, nocive pour la rétine et la faune.</td>
+                        <td><strong>Spectre :</strong> Lumière ambre ou orangée chaude (température inférieure à 3000 K).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gestion :</strong> Allumage continu à pleine puissance toute la nuit (gaspillage d'énergie public).</td>
+                        <td><strong>Gestion :</strong> Abaissement de l'intensité nocturne ou systèmes intelligents à détection de présence.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Le Cadre Légal et les Acteurs Engagés</h2>
+            <p>En France, l'<strong>arrêté du 27 décembre 2018</strong> encadre de manière stricte les horaires d'extinction des enseignes lumineuses et des bâtiments professionnels (obligation d'extinction au plus tard à 1h du matin). Des organismes comme l'<strong>ANPCEN</strong> (Association Nationale pour la Protection du Ciel et de l'Environnement Nocturnes) se battent au quotidien pour attribuer le label "Villes et Villages Étoilés" aux communes engagées dans la sobriété énergétique et lumineuse.</p>
+            
+            <div class="next-footer"><button class="next-btn" data-target="agir">Comment agir à mon échelle ? →</button></div>
         </div>
     </div>
 </div>
 
+<div class="section" id="section-agir">
+    <nav>
+        <a data-target="hub">HUB</a>
+        <a data-target="constat">Le Constat</a>
+        <a data-target="impacts">Les Impacts</a>
+        <a data-target="solutions">Solutions</a>
+        <a data-target="agir" class="active">Et Moi ?</a>
+    </nav>
+    <div class="container">
+        <div class="card">
+            <h1>L'Action Citoyenne</h1>
+            <p>La reconquête du ciel noir n'est pas uniquement l'affaire des municipalités. Chaque citoyen possède les leviers nécessaires pour réduire son empreinte lumineuse à son échelle.</p>
+            
+            <h2>Les Éco-gestes Lumineux</h2>
+            <ul>
+                <li><strong>Fermer ses volets et rideaux :</strong> Dès la tombée de la nuit, calfeutrez vos fenêtres pour empêcher la lumière intérieure de perturber la faune nocturne de votre jardin.</li>
+                <li><strong>Repenser son éclairage extérieur :</strong> Supprimez les projecteurs de jardin inutiles ou remplacez-les par des appliques orientées vers le bas dotées d'ampoules de couleur chaude.</li>
+                <li><strong>Installer des détecteurs :</strong> Remplacez vos interrupteurs extérieurs permanents par des capteurs de présence pour n'éclairer que lorsque cela est strictement requis.</li>
+            </ul>
+
+            <div class="media-placeholder">[ MODULE INTERACTIF : CHECKLIST DE MON EMPREINTE LUMINEUSE ]</div>
+
+            <h2>Devenez Sentinelle de la Nuit</h2>
+            <p>Grâce à des applications de sciences participatives comme <strong>"Gueule de Nuit"</strong>, vous pouvez cartographier les abus et recenser les commerces ou bureaux qui ne respectent pas la loi sur l'extinction des vitrines après 1h du matin. Sensibiliser son entourage et interpeller ses élus locaux sont les premiers pas pour redonner une place légitime à la nuit.</p>
+            
+            <div class="next-footer"><button class="next-btn" data-target="hub">Retour au Hub Constellation →</button></div>
+        </div>
+    </div>
+</div>
 
 <script>
 // ===== ÉTOILES =====
@@ -362,7 +411,7 @@ function generateRandomConnections(numNodes) {
     const pairs = []; const existingConnections = new Set(); const availableNodes = Array.from({length: numNodes}, (_, i) => i);
     shuffleArray(availableNodes); 
     for (let i = 0; i < availableNodes.length - 1; i++) { addConnection(availableNodes[i], availableNodes[i+1], pairs, existingConnections); }
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
         const n1 = Math.floor(Math.random() * numNodes); let n2 = Math.floor(Math.random() * numNodes);
         while (n1 === n2) { n2 = Math.floor(Math.random() * numNodes); }
         addConnection(n1, n2, pairs, existingConnections);
@@ -443,14 +492,13 @@ document.getElementById('enter-btn').addEventListener('click',function(){ naviga
     if(!crawl)return;
     
     let pos=-120, manual=0;
-    let isDone = false; // Permet de savoir si le texte a fini de passer
+    let isDone = false;
     
     function animate(){ 
         pos+=0.095+manual; 
         manual*=0.9; 
         crawl.style.bottom=pos+'%'; 
         
-        // Si le texte est monté suffisamment haut (hors de l'écran), on affiche le bouton
         if(pos > 180 && !isDone) {
             introSection.classList.add('show-controls');
             isDone = true;
@@ -459,18 +507,14 @@ document.getElementById('enter-btn').addEventListener('click',function(){ naviga
         if(pos<260) requestAnimationFrame(animate); 
     }
     
-    // Le scroll accélère le texte
     window.addEventListener('wheel',e=>{
-        if(currentSection === 'index') {
-            manual+=(-e.deltaY*0.0008);
-        }
+        if(currentSection === 'index') { manual+=(-e.deltaY*0.0008); }
     },{passive:true});
     
-    // ASTUCE UX : Si l'utilisateur clique n'importe où (sauf sur le lecteur audio), on passe le texte direct
     document.addEventListener('click', function(e) {
         if(currentSection === 'index' && !isDone && !e.target.closest('#audio-player')) {
-            pos = 200; // Fait monter le texte d'un coup
-            introSection.classList.add('show-controls'); // Affiche le bouton
+            pos = 200; 
+            introSection.classList.add('show-controls'); 
             isDone = true;
         }
     });
